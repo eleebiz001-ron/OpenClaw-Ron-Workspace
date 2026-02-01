@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ron's Task Board</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --todo-border: #cf6679;
+            --progress-border: #03dac6;
+            --done-border: #3700b3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        .board {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            overflow-x: auto;
+        }
+        .column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #161616;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .column-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+        .column-todo .column-header { color: var(--todo-border); border-color: var(--todo-border); }
+        .column-progress .column-header { color: var(--progress-border); border-color: var(--progress-border); }
+        .column-done .column-header { color: var(--done-border); border-color: var(--done-border); }
+
+        .task-card {
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        .task-desc {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .task-dates {
+            font-size: 0.75em;
+            color: #888;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        .badge {
+            background-color: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤵‍♂️ Ron's Work Status</h1>
+    <div class="board">
+        <div class="column column-todo" id="col-todo">
+            <div class="column-header">To Do (할 일)</div>
+            <!-- Tasks will go here -->
+        </div>
+        <div class="column column-progress" id="col-progress">
+            <div class="column-header">In Progress (진행 중)</div>
+            <!-- Tasks will go here -->
+        </div>
+        <div class="column column-done" id="col-done">
+            <div class="column-header">Done (완료)</div>
+            <!-- Tasks will go here -->
+        </div>
+    </div>
+
+    <script>
+        // 데이터(JSON)를 HTML 안에 직접 포함시켰습니다. (CORS 에러 방지용)
+        const tasks = [
+          {
+            "id": 14,
+            "title": "🛡️ 시스템 보안 및 해킹 방어 강화",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "Clawdbot(Moltbot) 인프라 보안 진단, 외부 공격 방어 로직 및 실시간 모니터링 체계 구축",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 13,
+            "title": "🧠 2nd Brain (Next.js) 구축",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "Obsidian/Linear 스타일 문서 뷰어 개발. 지식 문서 및 일일 저널 자동 생성 체계 구축.",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 11,
+            "title": "[CRITICAL] AI 할루시네이션 방지 시스템",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "최우선 처리: 교차 검증 로직 및 정직한 답변 프롬프트 최적화 적용",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 1,
+            "title": "텔레그램/왓츠앱 채널 연결",
+            "status": "Done",
+            "assignee": "Ron",
+            "desc": "기본 통신 채널 설정 완료",
+            "startDate": "2026-01-28",
+            "endDate": "2026-01-28"
+          },
+          {
+            "id": 2,
+            "title": "소피아 작가님 초대 및 인사",
+            "status": "Done",
+            "assignee": "Ron",
+            "desc": "텔레그램 연결 및 첫 인사 발송",
+            "startDate": "2026-01-28",
+            "endDate": "2026-01-28"
+          },
+          {
+            "id": 3,
+            "title": "Gmail/Calendar 연동 (gogcli)",
+            "status": "Done",
+            "assignee": "Ron",
+            "desc": "gogcli를 활용한 이메일 확인 및 일정 등록 성공",
+            "startDate": "2026-01-29",
+            "endDate": "2026-01-29"
+          },
+          {
+            "id": 4,
+            "title": "디지털 자산 뉴스 브리핑 (BTC, ETH, XRP, HBAR)",
+            "status": "Done",
+            "assignee": "Ron",
+            "desc": "매일 오전 08:00 정기 보고 체계 구축 완료 (크론 설정)",
+            "startDate": "2026-01-29",
+            "endDate": "2026-01-30"
+          },
+          {
+            "id": 5,
+            "title": "Ron's Task Board (Kanban)",
+            "status": "Done",
+            "assignee": "Ron",
+            "desc": "작업 현황 시각화 대시보드 업데이트 및 관리",
+            "startDate": "2026-01-29",
+            "endDate": "2026-01-30"
+          },
+          {
+            "id": 6,
+            "title": "소피아 작가님 마케팅 전략 & 행복 궤도",
+            "status": "To Do",
+            "assignee": "Ron",
+            "desc": "행복 궤도 프로젝트(Priority #4) 포함 마케팅 방안 기획",
+            "startDate": "",
+            "endDate": ""
+          },
+          {
+            "id": 7,
+            "title": "Antigravity & 야간 워크플로우 개선",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "Elastic Price Alert 시스템 구축 (오늘 밤 2시 실행)",
+            "startDate": "2026-01-29",
+            "endDate": ""
+          },
+          {
+            "id": 8,
+            "title": "디지털 휴먼 론(Digital Human Ron) 프로젝트",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "움직이는 얼굴과 목소리를 가진 비주얼 비서 연구 및 개발",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 10,
+            "title": "Mac App & Android 접근성 강화",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "보안 강화: Task Board를 Mac 전용 앱으로 전환 및 보안 인증을 통한 안드로이드 실시간 확인 구축",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 11,
+            "title": "AI 할루시네이션 방지 시스템",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "교차 검증 로직 및 할루시네이션 방지 프롬프트 엔지니어링 적용",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 12,
+            "title": "[💰] 수익 창출 프로젝트 (X, Youtube, NFT)",
+            "status": "In Progress",
+            "assignee": "Ron",
+            "desc": "SNS 자동화, 디지털 휴먼 콘텐츠, 소피아 작가님 작품 수익화 방안 연구",
+            "startDate": "2026-01-30",
+            "endDate": ""
+          },
+          {
+            "id": 9,
+            "title": "시각적 대시보드 (Floating Dashboard)",
+            "status": "To Do",
+            "assignee": "Ron",
+            "desc": "캔버스를 활용한 중력 없는 데이터 시각화 개발 (Priority #1)",
+            "startDate": "",
+            "endDate": ""
+          }
+        ];
+
+        function loadTasks() {
+            renderTasks(tasks);
+        }
+
+        function renderTasks(tasks) {
+            const cols = {
+                'To Do': document.getElementById('col-todo'),
+                'In Progress': document.getElementById('col-progress'),
+                'Done': document.getElementById('col-done')
+            };
+
+            tasks.forEach(task => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                
+                let dateHtml = '';
+                if (task.startDate) {
+                    dateHtml += `<div>시작: ${task.startDate}</div>`;
+                }
+                if (task.endDate) {
+                    dateHtml += `<div>완료: ${task.endDate}</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-desc">${task.desc || ''}</div>
+                    <div class="task-meta">
+                        <span class="badge">${task.assignee}</span>
+                        <span>ID: ${task.id}</span>
+                    </div>
+                    <div class="task-dates">
+                        ${dateHtml}
+                    </div>
+                `;
+                
+                if (cols[task.status]) {
+                    cols[task.status].appendChild(card);
+                }
+            });
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>

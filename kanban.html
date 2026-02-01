@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ron's Task Board</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc;
+            --todo-border: #cf6679;
+            --progress-border: #03dac6;
+            --done-border: #3700b3;
+            --agent-bg: #2c2c2c;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        .last-updated {
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        /* Task Force Section */
+        .agent-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+        .agent-card {
+            background-color: var(--agent-bg);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            width: 220px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .agent-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--progress-border);
+        }
+        .agent-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        .agent-role {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        .agent-status {
+            font-size: 0.85em;
+            color: var(--progress-border);
+            background: rgba(3, 218, 198, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        /* Kanban Board */
+        .board {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            overflow-x: auto;
+        }
+        .column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #161616;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .column-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #333;
+        }
+        .column-todo .column-header { color: var(--todo-border); border-color: var(--todo-border); }
+        .column-progress .column-header { color: var(--progress-border); border-color: var(--progress-border); }
+        .column-done .column-header { color: var(--done-border); border-color: var(--done-border); }
+
+        .task-card {
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .progress-badge {
+            font-size: 0.8em;
+            background-color: #333;
+            color: #4caf50;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        .task-desc {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .task-dates {
+            font-size: 0.75em;
+            color: #888;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        .badge {
+            background-color: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤵‍♂️ Ron's Task Force & Work Status</h1>
+    <div class="last-updated">Last Updated: 2026-02-01 17:04</div>
+    
+    <div class="agent-section" id="agent-container"></div>
+
+    <div class="board">
+        <div class="column column-todo" id="col-todo">
+            <div class="column-header">To Do (할 일)</div>
+        </div>
+        <div class="column column-progress" id="col-progress">
+            <div class="column-header">In Progress (진행 중)</div>
+        </div>
+        <div class="column column-done" id="col-done">
+            <div class="column-header">Done (완료)</div>
+        </div>
+    </div>
+
+    <script>
+        // Agent Data
+        const agents = [
+            { name: "🤵‍♂️ Ron", role: "Commander", status: "디지털 휴먼 프로젝트 착수" },
+            { name: "💻 Alpha", role: "Chief Engineer", status: "할루시네이션 방지 시스템 운영 중" },
+            { name: "🐦 Birdie", role: "Head of Intelligence", status: "X.com 트렌드 분석 중" },
+            { name: "🎨 Da Vinci", role: "Art Director", status: "글로벌 아트 마켓 조사 중" }
+        ];
+
+        // Task Data (Updated)
+        const tasks = [
+            { "id": 11, "title": "[CRITICAL] AI 할루시네이션 방지 시스템", "progress": "100%", "status": "Done", "assignee": "💻 Alpha", "desc": "교차 검증 스크립트(verify_prices.py) 구현 및 3중 검증 체계 완성", "startDate": "2026-01-30", "endDate": "2026-02-01" },
+            { "id": 8, "title": "디지털 휴먼 론 프로젝트", "progress": "25%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "비주얼 비서(Avatar) 및 음성(TTS) 도입 연구 착수", "startDate": "2026-01-30" },
+            { "id": 4, "title": "디지털 자산 뉴스 브리핑", "progress": "95%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "오전 8시 정시 발송 체계 및 데이터 정확도 보강 완료", "startDate": "2026-01-29" },
+            { "id": 7, "title": "Antigravity & 야간 워크플로우", "progress": "90%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "No-Sleep 인프라 및 정밀 시간 준수 시스템 안정화", "startDate": "2026-01-29" },
+            { "id": 14, "title": "시스템 보안 강화", "progress": "25%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "실시간 모니터링 체계 구축", "startDate": "2026-01-30" },
+            { "id": 12, "title": "[💰] 수익 창출 프로젝트", "progress": "35%", "status": "In Progress", "assignee": "🐦 Birdie", "desc": "X.com 트렌드 분석 및 수익화 연구", "startDate": "2026-01-30" },
+            { "id": 13, "title": "🧠 2nd Brain 구축", "progress": "15%", "status": "In Progress", "assignee": "💻 Alpha", "desc": "지식 문서 자동 생성 체계", "startDate": "2026-01-30" },
+            { "id": 10, "title": "Mac App 접근성 강화", "progress": "15%", "status": "In Progress", "assignee": "💻 Alpha", "desc": "보안 인증 구축", "startDate": "2026-01-30" },
+            { "id": 1, "title": "텔레그램/왓츠앱 연결", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "기본 통신 채널 설정 완료", "startDate": "2026-01-28", "endDate": "2026-01-28" },
+            { "id": 2, "title": "소피아 작가님 초대", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "텔레그램 연결 완료", "startDate": "2026-01-28", "endDate": "2026-01-28" },
+            { "id": 3, "title": "Gmail/Calendar 연동", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "gogcli 활용 이메일 확인 성공", "startDate": "2026-01-29", "endDate": "2026-01-29" },
+            { "id": 5, "title": "Ron's Task Board", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "시각화 대시보드 구축 완료", "startDate": "2026-01-29", "endDate": "2026-01-31" },
+            { "id": 6, "title": "소피아 작가님 마케팅 전략", "progress": "0%", "status": "To Do", "assignee": "🤵‍♂️ Ron", "desc": "행복 궤도 프로젝트 기획" },
+            { "id": 9, "title": "시각적 대시보드", "progress": "0%", "status": "To Do", "assignee": "🤵‍♂️ Ron", "desc": "데이터 시각화 개발" },
+            { "id": 15, "title": "🎯 스나이퍼 알림 시스템", "progress": "0%", "status": "To Do", "assignee": "🐦 Birdie", "desc": "목표 가격 포착 알림" },
+            { "id": 16, "title": "🎨 글로벌 아트 마켓 큐레이션", "progress": "0%", "status": "To Do", "assignee": "🎨 Da Vinci", "desc": "작품 스타일 분석 및 트렌드 리포트" },
+            { "id": 17, "title": "📚 '한국인의 미래 정신력' 이식", "progress": "0%", "status": "To Do", "assignee": "🤵‍♂️ Ron", "desc": "선생님 저서 핵심 가치 학습" }
+        ];
+
+        function renderAgents() {
+            const container = document.getElementById('agent-container');
+            container.innerHTML = '';
+            agents.forEach(agent => {
+                const div = document.createElement('div');
+                div.className = 'agent-card';
+                div.innerHTML = `
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-role">${agent.role}</div>
+                    <div class="agent-status">● ${agent.status}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderTasks() {
+            const cols = {
+                'To Do': document.getElementById('col-todo'),
+                'In Progress': document.getElementById('col-progress'),
+                'Done': document.getElementById('col-done')
+            };
+
+            tasks.forEach(task => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                let dateHtml = task.startDate ? `<div>시작: ${task.startDate}</div>` : '';
+                dateHtml += task.endDate ? `<div>완료: ${task.endDate}</div>` : '';
+                
+                // Add progress badge if progress exists
+                let titleHtml = task.title;
+                if (task.progress) {
+                    titleHtml += `<span class="progress-badge">${task.progress}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="task-title">${titleHtml}</div>
+                    <div class="task-desc">${task.desc}</div>
+                    <div class="task-meta"><span class="badge">${task.assignee}</span><span>ID: ${task.id}</span></div>
+                    <div class="task-dates">${dateHtml}</div>
+                `;
+                if (cols[task.status]) {
+                    cols[task.status].appendChild(card);
+                }
+            });
+        }
+
+        window.onload = function() {
+            renderAgents();
+            renderTasks();
+        };
+    </script>
+</body>
+</html>
