@@ -23,8 +23,9 @@ Things like:
 - home-server → 192.168.1.100, user: admin
 
 ### TTS
-- Preferred voice: "Nova" (warm, slightly British)
-- Default speaker: Kitchen HomePod
+- **선호 목소리:** "Ron" (신뢰감 있고 차분한 중저음의 남성 비서 음성)
+- **성격:** 정중하면서도 지적인 느낌.
+- **설정:** 소피아 사모님께는 조금 더 부드럽고 다정한 톤으로 조정 가능.
 ```
 
 ## Why Separate?

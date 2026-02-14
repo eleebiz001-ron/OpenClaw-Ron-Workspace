@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Ron's War Room v3 - Phase 1 Construction</title>
+    <style>
+        body { background-color: #0f0f0f; color: #fff; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
+        
+        /* 3D Isometric 느낌을 주기 위한 컨테이너 */
+        #viewport {
+            width: 100vw;
+            height: 100vh;
+            perspective: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #office-map {
+            width: 1000px;
+            height: 600px;
+            background: #1a1a1a;
+            position: relative;
+            transform: rotateX(45deg) rotateZ(-10deg);
+            transform-style: preserve-3d;
+            border: 10px solid #333;
+            box-shadow: 50px 50px 100px rgba(0,0,0,0.8);
+            background-image: 
+                linear-gradient(#222 1px, transparent 1px),
+                linear-gradient(90deg, #222 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* 공사 중 오버레이 */
+        .construction-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(230, 126, 34, 0.1);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: #e67e22;
+            z-index: 100;
+            text-shadow: 0 0 20px #e67e22;
+        }
+
+        .agent {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            transform: rotateZ(10deg) rotateX(-45deg); /* 아이소메트릭 반전으로 세우기 */
+            transform-style: preserve-3d;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: #e67e22; /* 공사 중이라 주황색 */
+            border-radius: 10px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 20px rgba(230, 126, 34, 0.8);
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .name-tag {
+            background: rgba(0,0,0,0.85);
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #e67e22;
+            display: inline-block;
+            min-width: 100px;
+        }
+
+        .name { font-weight: bold; font-size: 14px; color: #fff; display: block; }
+        .model { font-size: 10px; color: #e67e22; display: block; margin-top: 2px; }
+
+        #system-log {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 400px;
+            height: 150px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #e67e22;
+            padding: 10px;
+            font-size: 12px;
+            color: #e67e22;
+            overflow-y: auto;
+        }
+
+        .clock {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <div id="viewport">
+        <div id="office-map">
+            <div class="construction-overlay">🏗️ V3 PHASE 1 UNDER CONSTRUCTION</div>
+            
+            <!-- Agents in Construction Mode -->
+            <div id="agent-ron" class="agent" style="top: 100px; left: 100px;">
+                <div class="avatar">🤵‍♂️</div>
+                <div class="name-tag">
+                    <span class="name">RON</span>
+                    <span class="model">Kimi K2.5</span>
+                </div>
+            </div>
+            <div id="agent-alpha" class="agent" style="top: 100px; left: 450px;">
+                <div class="avatar" style="background: #e67e22;">💻</div>
+                <div class="name-tag">
+                    <span class="name">ALPHA</span>
+                    <span class="model">GPT-4o</span>
+                </div>
+            </div>
+            <div id="agent-birdie" class="agent" style="top: 100px; left: 800px;">
+                <div class="avatar">🐦</div>
+                <div class="name-tag">
+                    <span class="name">BIRDIE</span>
+                    <span class="model">xAI Grok</span>
+                </div>
+            </div>
+            <div id="agent-davinci" class="agent" style="top: 400px; left: 100px;">
+                <div class="avatar">🎨</div>
+                <div class="name-tag">
+                    <span class="name">DA VINCI</span>
+                    <span class="model">DALL-E 3</span>
+                </div>
+            </div>
+            <div id="agent-scout" class="agent" style="top: 400px; left: 450px;">
+                <div class="avatar">🔍</div>
+                <div class="name-tag">
+                    <span class="name">SCOUT</span>
+                    <span class="model">Gemini 1.5 Pro</span>
+                </div>
+            </div>
+            <div id="agent-echo" class="agent" style="top: 400px; left: 800px;">
+                <div class="avatar">🔊</div>
+                <div class="name-tag">
+                    <span class="name">ECHO</span>
+                    <span class="model">Gemini 1.5 Flash</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clock" id="live-clock"></div>
+    <div id="system-log">> V3 Phase 1: Isometric Engine Initialized...<br>> [ALPHA] Redesigning coordinate system...<br>> [DAVINCI] Drafting 3D projection models...<br>> STATUS: ALL AGENTS DEPLOYED FOR CONSTRUCTION.</div>
+
+    <script>
+        function updateClock() {
+            document.getElementById('live-clock').innerText = new Date().toLocaleString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        const log = document.getElementById('system-log');
+        const tasks = [
+            "Alpha: Grid system recalibrated.",
+            "Da Vinci: Texturing office floor...",
+            "Ron: Strategic oversight active.",
+            "Birdie: Monitoring high-signal flow.",
+            "Scout: Analyzing V3 component layout.",
+            "Echo: Latency check nominal."
+        ];
+
+        setInterval(() => {
+            const task = tasks[Math.floor(Math.random() * tasks.length)];
+            log.innerHTML += `<br>> ${task}`;
+            log.scrollTop = log.scrollHeight;
+        }, 3000);
+    </script>
+</body>
+</html>

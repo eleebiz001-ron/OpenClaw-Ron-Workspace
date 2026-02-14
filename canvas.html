@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Ron's War Room Prototype</title>
+    <style>
+        body { background-color: #000; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        canvas { border: 2px solid #333; box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+    </style>
+</head>
+<body>
+    <canvas id="warRoom"></canvas>
+    <script>
+        const canvas = document.getElementById('warRoom');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 800; canvas.height = 600;
+
+        const agents = [
+            { name: "Ron", x: 100, y: 150, color: "#f1c40f", thought: "War Room 구축 지휘 중..." },
+            { name: "Alpha", x: 300, y: 150, color: "#3498db", thought: "Canvas 렌더링 최적화 중" },
+            { name: "Da Vinci", x: 500, y: 150, color: "#e74c3c", thought: "픽셀 아트 에셋 제작 중" },
+            { name: "Birdie", x: 100, y: 350, color: "#2ecc71", thought: "X.com 트렌드 분석 중" },
+            { name: "Guardian", x: 300, y: 350, color: "#9b59b6", thought: "무결성 검사 시스템 대기" }
+        ];
+
+        function draw() {
+            ctx.fillStyle = "#121212"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "#1a1a1a";
+            for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
+            for(let j=0; j<canvas.height; j+=40) { ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke(); }
+            
+            ctx.fillStyle = "#2c3e50"; ctx.beginPath(); ctx.ellipse(400, 300, 120, 70, 0, 0, Math.PI * 2); ctx.fill();
+
+            agents.forEach((agent, index) => {
+                const bounce = Math.sin((Date.now() / 500) + index) * 5;
+                ctx.fillStyle = agent.color; ctx.fillRect(agent.x, agent.y + bounce, 40, 40);
+                ctx.fillStyle = "white"; ctx.font = "bold 14px monospace"; ctx.textAlign = "center";
+                ctx.fillText(agent.name, agent.x + 20, agent.y + 60 + bounce);
+                ctx.fillStyle = "white"; ctx.fillRect(agent.x - 30, agent.y - 50 + bounce, 140, 30);
+                ctx.fillStyle = "black"; ctx.font = "11px sans-serif"; ctx.textAlign = "left";
+                ctx.fillText(agent.thought, agent.x - 25, agent.y - 31 + bounce);
+            });
+
+            ctx.fillStyle = "#f1c40f"; ctx.font = "bold 24px monospace"; ctx.textAlign = "center";
+            ctx.fillText("🏛️ RON'S WAR ROOM - PROTOTYPE v0.1", 400, 40);
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>

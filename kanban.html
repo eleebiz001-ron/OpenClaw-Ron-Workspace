@@ -9,7 +9,7 @@
             --bg-color: #121212;
             --card-bg: #1e1e1e;
             --text-color: #e0e0e0;
-            --accent-color: #bb86fc;
+            --accent-color: #f1c40f; 
             --todo-border: #cf6679;
             --progress-border: #03dac6;
             --done-border: #3700b3;
@@ -31,14 +31,26 @@
             color: var(--accent-color);
             margin-bottom: 5px;
         }
+        .agent-status-active {
+            font-size: 0.85em;
+            color: var(--accent-color);
+            background: rgba(241, 196, 15, 0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
         .last-updated {
             text-align: center;
             color: #888;
             font-size: 0.9em;
             margin-bottom: 20px;
         }
-        
-        /* Task Force Section */
         .agent-section {
             display: flex;
             gap: 15px;
@@ -82,8 +94,6 @@
             border-radius: 12px;
             display: inline-block;
         }
-
-        /* Kanban Board */
         .board {
             display: flex;
             gap: 20px;
@@ -110,7 +120,6 @@
         .column-todo .column-header { color: var(--todo-border); border-color: var(--todo-border); }
         .column-progress .column-header { color: var(--progress-border); border-color: var(--progress-border); }
         .column-done .column-header { color: var(--done-border); border-color: var(--done-border); }
-
         .task-card {
             background-color: var(--card-bg);
             border-radius: 5px;
@@ -167,50 +176,64 @@
 </head>
 <body>
     <h1>🤵‍♂️ Ron's Task Force & Work Status</h1>
-    <div class="last-updated">Last Updated: 2026-02-01 17:04</div>
+    <div class="last-updated" id="live-clock">System Time: Loading...</div>
     
     <div class="agent-section" id="agent-container"></div>
 
     <div class="board">
         <div class="column column-todo" id="col-todo">
             <div class="column-header">To Do (할 일)</div>
+            <div class="task-card">
+                <div class="task-title">[DEV] XRP/XLM/HBAR 자동화 시스템<span class="progress-badge">45%</span></div>
+                <div class="task-desc">X.com 수익화에 집중하기 위해 보류</div>
+                <div class="task-meta"><span class="badge">💻 Alpha</span><span>ID: 18</span></div>
+                <div class="task-dates">시작: 2026-02-02</div>
+            </div>
+            <div class="task-card">
+                <div class="task-title">소피아 사모님 마케팅 & 영어 지원<span class="progress-badge">30%</span></div>
+                <div class="task-desc">X.com 수익화에 집중하기 위해 보류</div>
+                <div class="task-meta"><span class="badge">🤵‍♂️ Ron</span><span>ID: 6</span></div>
+                <div class="task-dates">시작: 2026-02-03</div>
+            </div>
+            <div class="task-card">
+                <div class="task-title">Task Board Next.js 마ig레이션<span class="progress-badge">5%</span></div>
+                <div class="task-desc">토큰 절약을 위해 개발 잠정 중단</div>
+                <div class="task-meta"><span class="badge">💻 Alpha</span><span>ID: 21</span></div>
+                <div class="task-dates">시작: 2026-02-03</div>
+            </div>
         </div>
         <div class="column column-progress" id="col-progress">
             <div class="column-header">In Progress (진행 중)</div>
+            <div class="task-card">
+                <div class="task-title">[💰] X.com 및 SNS 수익 창출 프로젝트<span class="progress-badge">40%</span></div>
+                <div class="task-desc">팔로워 22명 돌파(목표 초과 달성), 자동화 엔진 가동 중</div>
+                <div class="task-meta"><span class="badge">🐦 Birdie</span><span>ID: 12</span></div>
+                <div class="task-dates">시작: 2026-02-03</div>
+            </div>
         </div>
         <div class="column column-done" id="col-done">
             <div class="column-header">Done (완료)</div>
+            <div class="task-card">
+                <div class="task-title">Gmail/Calendar 연동 (gogcli)<span class="progress-badge">100%</span></div>
+                <div class="task-desc">eleebiz001 계정 인증 및 연동 완료</div>
+                <div class="task-meta"><span class="badge">🤵‍♂️ Ron</span><span>ID: 3</span></div>
+                <div class="task-dates">완료: 2026-02-03</div>
+            </div>
+            <div class="task-card">
+                <div class="task-title">Antigravity 사용법 학습<span class="progress-badge">100%</span></div>
+                <div class="task-desc">활용 가이드 2nd Brain 등록 완료</div>
+                <div class="task-meta"><span class="badge">🤵‍♂️ Ron</span><span>ID: 2</span></div>
+                <div class="task-dates">완료: 2026-02-03</div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Agent Data
         const agents = [
-            { name: "🤵‍♂️ Ron", role: "Commander", status: "디지털 휴먼 프로젝트 착수" },
-            { name: "💻 Alpha", role: "Chief Engineer", status: "할루시네이션 방지 시스템 운영 중" },
-            { name: "🐦 Birdie", role: "Head of Intelligence", status: "X.com 트렌드 분석 중" },
-            { name: "🎨 Da Vinci", role: "Art Director", status: "글로벌 아트 마켓 조사 중" }
-        ];
-
-        // Task Data (Updated)
-        const tasks = [
-            { "id": 11, "title": "[CRITICAL] AI 할루시네이션 방지 시스템", "progress": "100%", "status": "Done", "assignee": "💻 Alpha", "desc": "교차 검증 스크립트(verify_prices.py) 구현 및 3중 검증 체계 완성", "startDate": "2026-01-30", "endDate": "2026-02-01" },
-            { "id": 8, "title": "디지털 휴먼 론 프로젝트", "progress": "25%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "비주얼 비서(Avatar) 및 음성(TTS) 도입 연구 착수", "startDate": "2026-01-30" },
-            { "id": 4, "title": "디지털 자산 뉴스 브리핑", "progress": "95%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "오전 8시 정시 발송 체계 및 데이터 정확도 보강 완료", "startDate": "2026-01-29" },
-            { "id": 7, "title": "Antigravity & 야간 워크플로우", "progress": "90%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "No-Sleep 인프라 및 정밀 시간 준수 시스템 안정화", "startDate": "2026-01-29" },
-            { "id": 14, "title": "시스템 보안 강화", "progress": "25%", "status": "In Progress", "assignee": "🤵‍♂️ Ron", "desc": "실시간 모니터링 체계 구축", "startDate": "2026-01-30" },
-            { "id": 12, "title": "[💰] 수익 창출 프로젝트", "progress": "35%", "status": "In Progress", "assignee": "🐦 Birdie", "desc": "X.com 트렌드 분석 및 수익화 연구", "startDate": "2026-01-30" },
-            { "id": 13, "title": "🧠 2nd Brain 구축", "progress": "15%", "status": "In Progress", "assignee": "💻 Alpha", "desc": "지식 문서 자동 생성 체계", "startDate": "2026-01-30" },
-            { "id": 10, "title": "Mac App 접근성 강화", "progress": "15%", "status": "In Progress", "assignee": "💻 Alpha", "desc": "보안 인증 구축", "startDate": "2026-01-30" },
-            { "id": 1, "title": "텔레그램/왓츠앱 연결", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "기본 통신 채널 설정 완료", "startDate": "2026-01-28", "endDate": "2026-01-28" },
-            { "id": 2, "title": "소피아 작가님 초대", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "텔레그램 연결 완료", "startDate": "2026-01-28", "endDate": "2026-01-28" },
-            { "id": 3, "title": "Gmail/Calendar 연동", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "gogcli 활용 이메일 확인 성공", "startDate": "2026-01-29", "endDate": "2026-01-29" },
-            { "id": 5, "title": "Ron's Task Board", "progress": "100%", "status": "Done", "assignee": "🤵‍♂️ Ron", "desc": "시각화 대시보드 구축 완료", "startDate": "2026-01-29", "endDate": "2026-01-31" },
-            { "id": 6, "title": "소피아 작가님 마케팅 전략", "progress": "0%", "status": "To Do", "assignee": "🤵‍♂️ Ron", "desc": "행복 궤도 프로젝트 기획" },
-            { "id": 9, "title": "시각적 대시보드", "progress": "0%", "status": "To Do", "assignee": "🤵‍♂️ Ron", "desc": "데이터 시각화 개발" },
-            { "id": 15, "title": "🎯 스나이퍼 알림 시스템", "progress": "0%", "status": "To Do", "assignee": "🐦 Birdie", "desc": "목표 가격 포착 알림" },
-            { "id": 16, "title": "🎨 글로벌 아트 마켓 큐레이션", "progress": "0%", "status": "To Do", "assignee": "🎨 Da Vinci", "desc": "작품 스타일 분석 및 트렌드 리포트" },
-            { "id": 17, "title": "📚 '한국인의 미래 정신력' 이식", "progress": "0%", "status": "To Do", "assignee": "🤵‍♂️ Ron", "desc": "선생님 저서 핵심 가치 학습" }
+            { name: "🤵‍♂️ Ron", role: "Commander", status: "상황실 가동 및 Alpha에게 UI 고도화 지시 완료" },
+            { name: "💻 Alpha", role: "Chief Engineer", status: "[URGENT] 상황실 UI 핵심 기능 개발 착수" },
+            { name: "🐦 Birdie", role: "Head of Intelligence", status: "X.com 고신호 데이터 수집 및 분석 중" },
+            { name: "🎨 Da Vinci", role: "Art Director", status: "대기 중 (UI 디자인 지원 준비)" }
         ];
 
         function renderAgents() {
@@ -219,49 +242,23 @@
             agents.forEach(agent => {
                 const div = document.createElement('div');
                 div.className = 'agent-card';
+                // Alpha가 작업 중임을 시각적으로 표현 (애니메이션 효과를 위한 클래스 추가 등)
+                const statusClass = agent.name.includes("Alpha") ? "agent-status-active" : "agent-status";
                 div.innerHTML = `
                     <div class="agent-name">${agent.name}</div>
                     <div class="agent-role">${agent.role}</div>
-                    <div class="agent-status">● ${agent.status}</div>
+                    <div class="${statusClass}">● ${agent.status}</div>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function renderTasks() {
-            const cols = {
-                'To Do': document.getElementById('col-todo'),
-                'In Progress': document.getElementById('col-progress'),
-                'Done': document.getElementById('col-done')
-            };
-
-            tasks.forEach(task => {
-                const card = document.createElement('div');
-                card.className = 'task-card';
-                let dateHtml = task.startDate ? `<div>시작: ${task.startDate}</div>` : '';
-                dateHtml += task.endDate ? `<div>완료: ${task.endDate}</div>` : '';
-                
-                // Add progress badge if progress exists
-                let titleHtml = task.title;
-                if (task.progress) {
-                    titleHtml += `<span class="progress-badge">${task.progress}</span>`;
-                }
-
-                card.innerHTML = `
-                    <div class="task-title">${titleHtml}</div>
-                    <div class="task-desc">${task.desc}</div>
-                    <div class="task-meta"><span class="badge">${task.assignee}</span><span>ID: ${task.id}</span></div>
-                    <div class="task-dates">${dateHtml}</div>
-                `;
-                if (cols[task.status]) {
-                    cols[task.status].appendChild(card);
-                }
-            });
-        }
-
         window.onload = function() {
             renderAgents();
-            renderTasks();
+            // 실시간 시계 작동
+            setInterval(() => {
+                document.getElementById('live-clock').innerText = 'System Time: ' + new Date().toLocaleString();
+            }, 1000);
         };
     </script>
 </body>

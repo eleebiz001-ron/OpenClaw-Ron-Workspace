@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Ron's War Room v2 - Office Dashboard</title>
+    <style>
+        body { background-color: #1a1a1a; color: #fff; font-family: sans-serif; margin: 0; overflow: hidden; }
+        #office-map {
+            width: 1000px;
+            height: 700px;
+            background: #2c3e50; /* 사무실 바닥 느낌 */
+            margin: 20px auto;
+            position: relative;
+            border: 5px solid #333;
+            border-radius: 10px;
+            background-image: 
+                linear-gradient(45deg, #34495e 25%, transparent 25%), 
+                linear-gradient(-45deg, #34495e 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #34495e 75%),
+                linear-gradient(-45deg, transparent 75%, #34495e 75%);
+            background-size: 40px 40px;
+        }
+        .agent {
+            position: absolute;
+            width: 80px;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: #2ecc71; /* 기본값: 녹색 (Standby) */
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+            transition: all 0.3s ease;
+        }
+        /* 상태별 색상 클래스 */
+        .status-standby { background: #2ecc71; box-shadow: 0 0 15px rgba(46, 204, 113, 0.5); } /* 녹색 */
+        .status-busy { background: #e67e22; box-shadow: 0 0 15px rgba(230, 126, 34, 0.5); }    /* 주황색 */
+        .status-error { background: #e74c3c; box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }     /* 빨간색 */
+        .status-thinking { background: #f1c40f; box-shadow: 0 0 15px rgba(241, 196, 15, 0.5); } /* 노란색 */
+        .name { font-weight: bold; margin-top: 5px; font-size: 14px; }
+        .bubble {
+            position: absolute;
+            bottom: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            color: #000;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            width: 150px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 10;
+        }
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -10px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #fff transparent transparent transparent;
+        }
+        .desk {
+            position: absolute;
+            width: 100px;
+            height: 60px;
+            background: #7f8c8d;
+            border-radius: 5px;
+            border: 2px solid #95a5a6;
+        }
+        #system-log {
+            width: 1000px;
+            height: 150px;
+            background: #000;
+            margin: 10px auto;
+            padding: 10px;
+            font-family: monospace;
+            color: #0f0;
+            overflow-y: auto;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+        .clock {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 20px;
+            color: #f1c40f;
+        }
+    </style>
+</head>
+<body>
+    <div id="office-map">
+        <div class="clock" id="live-clock">2026-02-13 16:45:00</div>
+        <!-- Desks -->
+        <div class="desk" style="top: 100px; left: 100px;"></div>
+        <div class="desk" style="top: 100px; left: 450px;"></div>
+        <div class="desk" style="top: 100px; left: 800px;"></div>
+        <div class="desk" style="top: 450px; left: 100px;"></div>
+        <div class="desk" style="top: 450px; left: 450px;"></div>
+        <div class="desk" style="top: 450px; left: 800px;"></div>
+
+        <div id="agent-ron" class="agent" style="top: 120px; left: 110px;">
+            <div class="bubble" id="bubble-ron">전략 수립 중...</div>
+            <div class="avatar status-standby" id="avatar-ron">🤵‍♂️</div>
+            <div class="name">Ron</div>
+            <div style="font-size: 10px; color: #888;">Kimi K2.5</div>
+        </div>
+        <div id="agent-alpha" class="agent" style="top: 120px; left: 460px;">
+            <div class="bubble" id="bubble-alpha">UI 엔진 최적화 작업 중!</div>
+            <div class="avatar status-standby" id="avatar-alpha">💻</div>
+            <div class="name">Alpha</div>
+            <div style="font-size: 10px; color: #888;">GPT-4o</div>
+        </div>
+        <div id="agent-birdie" class="agent" style="top: 120px; left: 810px;">
+            <div class="bubble" id="bubble-birdie">X.com 트렌드 스캔 중...</div>
+            <div class="avatar status-standby" id="avatar-birdie">🐦</div>
+            <div class="name">Birdie</div>
+            <div style="font-size: 10px; color: #888;">xAI Grok</div>
+        </div>
+        <div id="agent-davinci" class="agent" style="top: 470px; left: 110px;">
+            <div class="bubble" id="bubble-davinci">대시보드 그래픽 렌더링...</div>
+            <div class="avatar status-standby" id="avatar-davinci">🎨</div>
+            <div class="name">Da Vinci</div>
+            <div style="font-size: 10px; color: #888;">DALL-E 3</div>
+        </div>
+        <div id="agent-scout" class="agent" style="top: 470px; left: 460px;">
+            <div class="bubble" id="bubble-scout">신규 기회 탐색 중...</div>
+            <div class="avatar status-standby" id="avatar-scout">🔍</div>
+            <div class="name">Scout</div>
+            <div style="font-size: 10px; color: #888;">Gemini 1.5 Pro</div>
+        </div>
+        <div id="agent-echo" class="agent" style="top: 470px; left: 810px;">
+            <div class="bubble" id="bubble-echo">시스템 통합 및 에코 체크...</div>
+            <div class="avatar status-standby" id="avatar-echo">🔊</div>
+            <div class="name">Echo</div>
+            <div style="font-size: 10px; color: #888;">Gemini 1.5 Flash</div>
+        </div>
+    </div>
+
+    <div id="system-log">> Initializing War Room v2 Office Layout...<br>> Loading 6 Agents: Ron, Alpha, Birdie, Da Vinci, Scout, Echo...<br>> All systems online. User: Representative EUN CHUL LEE.</div>
+
+    <script>
+        function updateClock() {
+            document.getElementById('live-clock').innerText = new Date().toLocaleString();
+        }
+        setInterval(updateClock, 1000);
+
+        function showBubble(id, text) {
+            const bubble = document.getElementById('bubble-' + id);
+            bubble.innerText = text;
+            bubble.style.display = 'block';
+            setTimeout(() => { bubble.style.display = 'none'; }, 5000);
+        }
+
+        function setStatus(id, statusClass) {
+            const avatar = document.getElementById('avatar-' + id);
+            avatar.className = 'avatar ' + statusClass;
+        }
+
+        function echoTask() {
+            setStatus('echo', 'status-busy');
+            showBubble('echo', '날씨와 일정을 확인 중입니다...');
+            setTimeout(() => {
+                setStatus('echo', 'status-standby');
+                showBubble('echo', '보고 완료!');
+            }, 5000);
+        }
+
+        // UTXO 포스팅 완료 및 보고 모드
+        setStatus('ron', 'status-standby');
+        setStatus('birdie', 'status-standby');
+        showBubble('ron', '비트코인 주기 분석 포스트 완료!');
+        showBubble('birdie', 'UTXO 온체인 전략 전파!');
+        
+        const log = document.getElementById('system-log');
+        log.innerHTML += `<br>> [RON] BTC UTXO analysis post published: ID 2022239041543127315`;
+        log.innerHTML += `<br>> [BIRDIE] Market message: 4-year cycle is broken. New Normal.`;
+        log.scrollTop = log.scrollHeight;
+            const agentIds = ['ron', 'alpha', 'birdie', 'davinci', 'scout', 'echo'];
+            const id = agentIds[Math.floor(Math.random() * agentIds.length)];
+            
+            // 이제 기본적으로는 standby(녹색)를 훨씬 높은 확률로 유지하게 변경
+            const rand = Math.random();
+            let randomStatus = 'status-standby';
+            if (rand > 0.8) randomStatus = 'status-busy';
+            else if (rand > 0.95) randomStatus = 'status-thinking';
+            
+            setStatus(id, randomStatus);
+            
+            const messages = ["대기 중입니다.", "이상 무!", "대표님, 명령을 기다립니다.", "시스템 최적화 완료.", "주변 상황 감시 중..."];
+            if (randomStatus !== 'status-standby') {
+                showBubble(id, messages[Math.floor(Math.random() * messages.length)]);
+                const log = document.getElementById('system-log');
+                log.innerHTML += `<br>> [${id.toUpperCase()}] Status changed to ${randomStatus.split('-')[1]}`;
+                log.scrollTop = log.scrollHeight;
+            }
+        }, 4000);
+    </script>
+</body>
+</html>
