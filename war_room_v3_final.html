@@ -2,100 +2,107 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Ron's War Room V3 FINAL - RESTORED</title>
+    <title>Ron's War Room v3.2 Final - Professional Edition</title>
     <style>
         :root {
-            --bg-dark: #0a0a0a;
-            --card-bg: #141414;
+            --bg-dark: #0f0f12;
+            --sidebar-bg: #050505;
             --accent: #f1c40f;
-            --text-gray: #888;
+            --neon-blue: #03dac6;
+            --neon-red: #cf6679;
+            --text-gray: #777;
             --terminal-green: #00ff41;
         }
-        body { background: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; display: flex; height: 100vh; }
-        
-        /* Left Sidebar: Mission Control */
-        #mission-control { width: 300px; background: #000; border-right: 1px solid #333; padding: 20px; display: flex; flex-direction: column; }
-        .control-header { color: var(--accent); font-size: 14px; letter-spacing: 2px; margin-bottom: 30px; font-weight: bold; }
-        .task-item { margin-bottom: 25px; }
-        .task-title { font-size: 13px; color: #eee; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .task-agents { font-size: 10px; color: var(--text-gray); }
-        .progress-container { width: 100%; height: 4px; background: #222; border-radius: 2px; margin-top: 5px; }
-        .progress-bar { height: 100%; background: #03dac6; border-radius: 2px; box-shadow: 0 0 10px rgba(3,218,198,0.5); }
+        body { background: var(--bg-dark); color: white; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; overflow: hidden; display: flex; height: 100vh; }
 
-        /* Main Area */
+        /* Left Sidebar: MISSION CONTROL */
+        #left-sidebar { width: 280px; background: var(--sidebar-bg); border-right: 1px solid #222; padding: 25px; display: flex; flex-direction: column; }
+        .sidebar-title { color: var(--accent); font-size: 14px; letter-spacing: 3px; font-weight: bold; margin-bottom: 40px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .mission-item { margin-bottom: 30px; }
+        .mission-header { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; color: #ddd; margin-bottom: 5px; }
+        .mission-agents { font-size: 10px; color: var(--text-gray); margin-bottom: 8px; }
+        .progress-box { width: 100%; height: 6px; background: #1a1a1a; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--neon-blue); border-radius: 3px; box-shadow: 0 0 10px var(--neon-blue); transition: width 1s ease; }
+
+        /* Main Viewport */
         #main-view { flex: 1; display: flex; flex-direction: column; position: relative; }
         
-        /* Top Bar: Ticker */
-        #ticker { height: 40px; background: #000; display: flex; align-items: center; justify-content: space-around; font-size: 12px; border-bottom: 1px solid #222; }
-        .ticker-item { display: flex; gap: 10px; }
-        .up { color: #03dac6; } .down { color: #cf6679; }
+        /* Top Ticker */
+        #top-ticker { height: 45px; background: #000; border-bottom: 1px solid #222; display: flex; align-items: center; justify-content: space-around; font-size: 12px; font-family: 'Consolas', monospace; }
+        .ticker-coin { display: flex; gap: 8px; }
+        .up { color: var(--neon-blue); } .down { color: var(--neon-red); }
 
-        /* Center Content */
-        #center-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle, #1a1a1a 0%, #0a0a0a 100%); }
-        .room-title { position: absolute; top: 15%; font-size: 60px; font-weight: bold; color: rgba(255,255,255,0.03); letter-spacing: 15px; }
-        
-        /* Agent Cards Grid */
-        .agent-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 150px; z-index: 5; }
-        .agent-card { width: 150px; text-align: center; }
-        .avatar-circle { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 4px solid #333; position: relative; }
-        .avatar-circle::after { content: ''; position: absolute; bottom: -10px; width: 40px; height: 3px; background: #03dac6; }
-        .agent-name { margin-top: 15px; font-weight: bold; font-size: 14px; }
-        .agent-model { font-size: 10px; color: var(--text-gray); margin-top: 4px; }
+        /* Center Dashboard */
+        #dashboard { flex: 1; background: radial-gradient(circle at center, #1a1a25 0%, #0a0a0f 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .background-title { position: absolute; top: 15%; font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.02); letter-spacing: 20px; pointer-events: none; }
 
-        /* Middle Banner */
-        .executive-banner { background: #000; border: 1px solid var(--accent); padding: 10px 40px; margin: 40px 0; border-radius: 4px; text-align: center; box-shadow: 0 0 20px rgba(241,196,15,0.2); }
-        .banner-label { font-size: 10px; color: var(--accent); letter-spacing: 2px; }
-        .banner-text { font-size: 16px; font-weight: bold; margin-top: 5px; }
+        /* Agent Grid */
+        .agent-grid-top { display: flex; gap: 200px; margin-bottom: 50px; z-index: 2; }
+        .agent-grid-bottom { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; z-index: 2; }
+        .agent-card { width: 130px; text-align: center; transition: transform 0.3s ease; }
+        .agent-card:hover { transform: scale(1.05); }
+        .avatar-circle { width: 90px; height: 90px; background: white; border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 45px; border: 4px solid #1a1a1a; position: relative; box-shadow: 0 0 30px rgba(255,255,255,0.05); }
+        .avatar-circle::after { content: ''; position: absolute; bottom: -12px; width: 45px; height: 4px; background: var(--neon-blue); border-radius: 2px; }
+        .agent-name { margin-top: 20px; font-weight: bold; font-size: 15px; color: #fff; text-transform: uppercase; }
+        .agent-model { font-size: 10px; color: var(--accent); margin-top: 5px; opacity: 0.8; }
 
-        /* Right Sidebar: Terminal */
-        #terminal { width: 350px; background: #000; border-left: 1px solid #333; padding: 20px; display: flex; flex-direction: column; }
-        .terminal-header { color: #555; font-size: 12px; margin-bottom: 20px; }
-        .log-container { flex: 1; font-family: 'Consolas', monospace; font-size: 11px; overflow-y: auto; color: var(--terminal-green); line-height: 1.6; }
-        .log-entry { margin-bottom: 8px; border-left: 2px solid #222; padding-left: 10px; }
-        .log-time { color: #444; margin-right: 8px; }
-        .log-sender { color: var(--accent); font-weight: bold; margin-right: 8px; }
+        /* Executive Banner */
+        .exec-banner { background: #000; border: 1px solid var(--accent); padding: 12px 60px; margin: 30px 0; border-radius: 2px; text-align: center; box-shadow: 0 0 40px rgba(241,196,15,0.15); z-index: 2; }
+        .banner-label { font-size: 10px; color: var(--accent); letter-spacing: 4px; font-weight: bold; }
+        .banner-text { font-size: 18px; font-weight: bold; margin-top: 6px; letter-spacing: 1px; color: white; }
 
-        .lounge-btn { margin-top: 50px; padding: 10px 30px; background: #1a2a3a; border: 1px solid #3a4a5a; border-radius: 4px; font-size: 12px; color: #8af; cursor: pointer; }
+        /* Right Sidebar: TERMINAL */
+        #right-sidebar { width: 380px; background: #000; border-left: 1px solid #222; padding: 20px; display: flex; flex-direction: column; }
+        .terminal-title { color: #444; font-size: 11px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        #log-container { flex: 1; font-family: 'Courier New', monospace; font-size: 12px; overflow-y: auto; color: var(--terminal-green); line-height: 1.8; }
+        .log-entry { margin-bottom: 12px; border-left: 2px solid #1a1a1a; padding-left: 12px; animation: fadeIn 0.5s ease; }
+        .log-time { color: #333; margin-right: 10px; }
+        .log-tag { color: var(--accent); font-weight: bold; margin-right: 8px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+        .footer-btn { margin-top: 40px; padding: 12px 40px; background: #0a1520; border: 1px solid #1a3a5a; border-radius: 4px; color: #7abfff; font-size: 11px; cursor: pointer; letter-spacing: 1px; }
+        .footer-btn:hover { background: #1a3a5a; color: white; }
     </style>
 </head>
 <body>
-    <!-- SIDEBAR: MISSION CONTROL -->
-    <div id="mission-control">
-        <div class="control-header">MISSION CONTROL</div>
+    <!-- LEFT SIDEBAR -->
+    <div id="left-sidebar">
+        <div class="sidebar-title">MISSION CONTROL</div>
         
-        <div class="task-item">
-            <div class="task-title">Future Trading System <span style="color:var(--accent)">56%</span></div>
-            <div class="task-agents">Alpha / Scout</div>
-            <div class="progress-container"><div class="progress-bar" style="width: 56%"></div></div>
+        <div class="mission-item">
+            <div class="mission-header"><span>Future Trading System</span><span id="prog-futures-val">56%</span></div>
+            <div class="mission-agents">Alpha / Scout</div>
+            <div class="progress-box"><div class="progress-fill" id="prog-futures-bar" style="width: 56%"></div></div>
         </div>
 
-        <div class="task-item">
-            <div class="task-title">X.com Revenue Project <span style="color:var(--accent)">100%</span></div>
-            <div class="task-agents">Birdie / Ron</div>
-            <div class="progress-container"><div class="progress-bar" style="width: 100%"></div></div>
+        <div class="mission-item">
+            <div class="mission-header"><span>X.com Revenue Project</span><span>100%</span></div>
+            <div class="mission-agents">Birdie / Ron</div>
+            <div class="progress-box"><div class="progress-fill" style="width: 100%"></div></div>
         </div>
 
-        <div class="task-item">
-            <div class="task-title">War Room V3 FINAL <span style="color:var(--accent)">100%</span></div>
-            <div class="task-agents">Team Ron</div>
-            <div class="progress-container"><div class="progress-bar" style="width: 100%"></div></div>
+        <div class="mission-item">
+            <div class="mission-header"><span>War Room V3 FINAL</span><span>100%</span></div>
+            <div class="mission-agents">Team Ron</div>
+            <div class="progress-box"><div class="progress-fill" style="width: 100%"></div></div>
         </div>
     </div>
 
     <!-- MAIN VIEW -->
     <div id="main-view">
-        <div id="ticker">
-            <div class="ticker-item">BTC: <span class="up">$96,960 ▼ 1.27%</span></div>
-            <div class="ticker-item">ETH: <span class="up">$3,957.5 ▼ 1.32%</span></div>
-            <div class="ticker-item">XRP: <span class="down">$2.36 ▲ 1.93%</span></div>
-            <div class="ticker-item">XLM: <span class="down">$0.4575 ▲ 1.85%</span></div>
+        <div id="top-ticker">
+            <div class="ticker-coin">BTC: <span class="up">$96,420 ▼ 1.27%</span></div>
+            <div class="ticker-coin">ETH: <span class="up">$3,845.5 ▼ 1.32%</span></div>
+            <div class="ticker-coin">XRP: <span class="down">$1.36 ▲ 1.93%</span></div>
+            <div class="ticker-coin">XLM: <span class="down">$0.1575 ▲ 1.85%</span></div>
+            <div class="ticker-coin">HBAR: <span class="up">$0.1820 ▼ 0.95%</span></div>
         </div>
 
-        <div id="center-content">
-            <div class="room-title">RON'S WAR ROOM</div>
+        <div id="dashboard">
+            <div class="background-title">RON'S WAR ROOM</div>
             
-            <!-- Top Row Agents -->
-            <div class="agent-grid">
+            <div class="agent-grid-top">
                 <div class="agent-card">
                     <div class="avatar-circle">🤵‍♂️</div>
                     <div class="agent-name">RON</div>
@@ -108,14 +115,12 @@
                 </div>
             </div>
 
-            <!-- Middle Banner -->
-            <div class="executive-banner">
+            <div class="exec-banner">
                 <div class="banner-label">EXECUTIVE SESSION</div>
-                <div class="banner-text">Full System Sync Verification</div>
+                <div class="banner-text" id="exec-status">Full System Sync Verification</div>
             </div>
 
-            <!-- Bottom Rows Agents -->
-            <div class="agent-grid">
+            <div class="agent-grid-bottom">
                 <div class="agent-card">
                     <div class="avatar-circle">💻</div>
                     <div class="agent-name">ALPHA</div>
@@ -138,25 +143,51 @@
                 </div>
             </div>
 
-            <button class="lounge-btn">EXECUTIVE LOUNGE</button>
+            <button class="footer-btn">EXECUTIVE LOUNGE</button>
         </div>
     </div>
 
-    <!-- TERMINAL: REAL-TIME LOGS -->
-    <div id="terminal">
-        <div class="terminal-header">REAL-TIME TERMINAL</div>
-        <div class="log-container" id="log-container">
-            <div class="log-entry"><span class="log-time">[10:45:01]</span> <span class="log-sender">SYSTEM:</span> Ron's War Room Final Engine Initialized.</div>
-            <div class="log-entry"><span class="log-time">[10:45:10]</span> <span class="log-sender">SYSTEM:</span> CONFERENCE STARTED - Full System Sync Verification.</div>
-            <div class="log-entry"><span class="log-time">[10:45:20]</span> <span class="log-sender">ALPHA:</span> Syncing JSON stream v3.9.7...</div>
-            <div class="log-entry"><span class="log-time">[10:45:31]</span> <span class="log-sender">ECHO:</span> Latency check nominal (15ms).</div>
-            <div class="log-entry"><span class="log-time">[10:45:45]</span> <span class="log-sender">RON:</span> Dashboard restored. Waiting for Representative approval.</div>
+    <!-- RIGHT SIDEBAR -->
+    <div id="right-sidebar">
+        <div class="terminal-title"><span>REAL-TIME SYSTEM LOGS</span><span id="live-clock"></span></div>
+        <div id="log-container">
+            <!-- Logs will be loaded dynamically -->
         </div>
     </div>
 
     <script>
-        // 5초마다 자동 새로고침 시도
-        // setTimeout(() => { location.reload(); }, 5000);
+        async function updateStatus() {
+            try {
+                const response = await fetch('war_room_status.json');
+                const data = await response.json();
+                
+                // Update Progress
+                if(data.futures_system) {
+                    document.getElementById('prog-futures-val').innerText = data.futures_system.progress;
+                    document.getElementById('prog-futures-bar').style.width = data.futures_system.progress.split('%')[0] + '%';
+                }
+
+                // Update Logs
+                const logContainer = document.getElementById('log-container');
+                logContainer.innerHTML = '';
+                data.logs.forEach(log => {
+                    const entry = document.createElement('div');
+                    entry.className = 'log-entry';
+                    entry.innerHTML = `<span class="log-tag">▶</span> ${log}`;
+                    logContainer.appendChild(entry);
+                });
+                logContainer.scrollTop = logContainer.scrollHeight;
+
+            } catch (e) { console.error("Sync error", e); }
+        }
+
+        function updateClock() {
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString();
+        }
+
+        setInterval(updateStatus, 3000);
+        setInterval(updateClock, 1000);
+        updateStatus();
     </script>
 </body>
 </html>
