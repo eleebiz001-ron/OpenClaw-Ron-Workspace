@@ -1,0 +1,14 @@
+{
+    "project": "Hyperliquid Futures System",
+    "milestones": [
+        {"id": 1, "task": "Market Analysis & Strategy", "status": "completed", "weight": 20},
+        {"id": 2, "task": "Git & Security Setup", "status": "completed", "weight": 10},
+        {"id": 3, "task": "War Room v3.2 UI Build", "status": "completed", "weight": 10},
+        {"id": 4, "task": "CoinGecko Real-time API Integration", "status": "completed", "weight": 16},
+        {"id": 5, "task": "Hyperliquid API Connection", "status": "pending", "weight": 14},
+        {"id": 6, "task": "Micro-Scalping Logic Implementation", "status": "pending", "weight": 20},
+        {"id": 7, "task": "Live Testnet Execution", "status": "pending", "weight": 10}
+    ],
+    "current_progress": 56,
+    "last_update": "2026-02-14 10:52:00"
+}

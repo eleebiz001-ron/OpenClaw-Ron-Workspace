@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>RON'S WAR ROOM v4 - EXECUTIVE EDITION</title>
+    <style>
+        :root {
+            --bg-deep: #050508;
+            --card-dark: rgba(20, 20, 30, 0.8);
+            --accent-yellow: #f1c40f;
+            --neon-cyan: #00f2ff;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --text-silver: #c0c0c0;
+            --border-glow: rgba(0, 242, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            background-color: var(--bg-deep); 
+            background-image: radial-gradient(circle at 50% 50%, #101020 0%, #050508 100%);
+            color: white; 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            margin: 0; 
+            overflow: hidden; 
+            display: flex; 
+            height: 100vh;
+        }
+
+        /* LEFT: MISSION CONTROL */
+        #sidebar-left {
+            width: 320px;
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .sidebar-title { color: var(--accent-yellow); font-size: 14px; font-weight: 900; letter-spacing: 4px; margin-bottom: 50px; }
+        .project-card { margin-bottom: 35px; }
+        .project-info { display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #eee; }
+        .project-agents { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 5px; }
+        .progress-track { width: 100%; height: 5px; background: #111; border-radius: 10px; }
+        .progress-bar { height: 100%; background: var(--neon-cyan); border-radius: 10px; box-shadow: 0 0 15px var(--neon-cyan); transition: width 1s ease; }
+
+        /* MAIN VIEWPORT */
+        #viewport { flex: 1; display: flex; flex-direction: column; position: relative; }
+
+        /* TOP: MARKET TICKER */
+        #ticker-bar {
+            height: 50px;
+            background: rgba(0,0,0,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            gap: 40px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+        .coin-box { display: flex; gap: 10px; color: var(--text-silver); }
+        .up { color: var(--neon-green); }
+        .down { color: var(--neon-red); }
+
+        /* CENTER: AGENT ARENA */
+        #arena {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+        .arena-bg-title { position: absolute; font-size: 120px; font-weight: 900; color: rgba(255,255,255,0.01); letter-spacing: 30px; user-select: none; }
+
+        .agent-row-top { display: flex; gap: 180px; margin-bottom: 40px; }
+        .agent-row-bottom { display: flex; gap: 50px; }
+
+        .agent-card { width: 140px; text-align: center; position: relative; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .avatar-frame {
+            width: 100px; height: 100px;
+            background: #fff;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 50px;
+            border: 5px solid #222;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        /* Agent State Colors */
+        .agent-card.green .avatar-frame { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(57, 255, 20, 0.2); }
+        .agent-card.yellow .avatar-frame { 
+            border-color: var(--accent-yellow); 
+            box-shadow: 0 0 35px rgba(241, 196, 15, 0.5); 
+            transform: scale(1.1);
+            animation: pulse-active 1.5s infinite;
+        }
+
+        @keyframes pulse-active {
+            0% { box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
+            50% { box-shadow: 0 0 45px rgba(241, 196, 15, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
+        }
+
+        .agent-label { margin-top: 15px; font-weight: 900; font-size: 16px; letter-spacing: 1px; }
+        .agent-model { font-size: 10px; color: var(--accent-yellow); margin-top: 3px; opacity: 0.7; }
+
+        /* CENTER MEETING BANNER */
+        .meeting-room {
+            background: rgba(0,0,0,0.9);
+            border: 1px solid var(--accent-yellow);
+            padding: 15px 80px;
+            margin: 30px 0;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(241, 196, 15, 0.1);
+        }
+        .meeting-title { font-size: 10px; letter-spacing: 5px; color: var(--accent-yellow); font-weight: bold; margin-bottom: 5px; }
+        .meeting-subject { font-size: 20px; font-weight: bold; color: white; }
+
+        /* RIGHT: CONSOLE */
+        #sidebar-right {
+            width: 480px;
+            background: #000;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+        .console-header { 
+            background: #0a0a0a; 
+            padding: 20px 30px; 
+            border-bottom: 1px solid #111;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .console-title { font-size: 12px; font-weight: 900; color: #444; letter-spacing: 2px; }
+        #log-stream { 
+            flex: 1; 
+            padding: 30px; 
+            overflow-y: auto; 
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--neon-green);
+        }
+        .log-line { margin-bottom: 15px; animation: slideUp 0.3s ease-out; }
+        .log-time { color: #333; margin-right: 15px; }
+        .log-tag { color: var(--accent-yellow); font-weight: bold; margin-right: 10px; }
+        .log-msg { color: #e0e0e0; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* SCROLLBAR */
+        #log-stream::-webkit-scrollbar { width: 4px; }
+        #log-stream::-webkit-scrollbar-thumb { background: #222; }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR LEFT: MISSION CONTROL -->
+    <div id="sidebar-left">
+        <div class="sidebar-title">MISSION CONTROL</div>
+        
+        <div class="project-card">
+            <div class="project-info"><span>Future Trading System</span><span id="prog-val-1">56%</span></div>
+            <div class="project-agents">Alpha / Scout / Ron</div>
+            <div class="progress-track"><div id="prog-bar-1" class="progress-bar" style="width: 56%"></div></div>
+        </div>
+
+        <div class="project-card">
+            <div class="project-info"><span>X.com Revenue Project</span><span>100%</span></div>
+            <div class="project-agents">Birdie / Ron</div>
+            <div class="progress-track"><div class="progress-bar" style="width: 100%"></div></div>
+        </div>
+
+        <div class="project-card">
+            <div class="project-info"><span>War Room v4 Live</span><span>10%</span></div>
+            <div class="project-agents">Team Ron / Da Vinci</div>
+            <div class="progress-track"><div class="progress-bar" style="width: 10%; background: #fff; box-shadow: 0 0 10px #fff;"></div></div>
+        </div>
+    </div>
+
+    <!-- MAIN VIEWPORT -->
+    <div id="viewport">
+        <!-- TICKER -->
+        <div id="ticker-bar">
+            <div class="coin-box">BTC: <span id="p-btc">Loading...</span></div>
+            <div class="coin-box">ETH: <span id="p-eth">Loading...</span></div>
+            <div class="coin-box">XRP: <span id="p-xrp">Loading...</span></div>
+            <div class="coin-box">XLM: <span id="p-xlm">Loading...</span></div>
+            <div class="coin-box">HBAR: <span id="p-hbar">Loading...</span></div>
+        </div>
+
+        <!-- ARENA -->
+        <div id="arena">
+            <div class="arena-bg-title">RON'S ROOM</div>
+
+            <div class="agent-row-top">
+                <div id="agent-ron" class="agent-card yellow">
+                    <div class="avatar-frame">🤵‍♂️</div>
+                    <div class="agent-label">RON</div>
+                    <div class="agent-model">Kimi K2.5</div>
+                </div>
+                <div id="agent-birdie" class="agent-card green">
+                    <div class="avatar-frame">🐦</div>
+                    <div class="agent-label">BIRDIE</div>
+                    <div class="agent-model">xAI Grok</div>
+                </div>
+            </div>
+
+            <div class="meeting-room">
+                <div class="meeting-title">EXECUTIVE SESSION</div>
+                <div class="meeting-subject" id="current-task">Rebuilding War Room v4</div>
+            </div>
+
+            <div class="agent-row-bottom">
+                <div id="agent-alpha" class="agent-card green">
+                    <div class="avatar-frame">💻</div>
+                    <div class="agent-label">ALPHA</div>
+                    <div class="agent-model">GPT-4o</div>
+                </div>
+                <div id="agent-echo" class="agent-card green">
+                    <div class="avatar-frame">🔊</div>
+                    <div class="agent-label">ECHO</div>
+                    <div class="agent-model">Gemini Flash</div>
+                </div>
+                <div id="agent-davinci" class="agent-card green">
+                    <div class="avatar-frame">🎨</div>
+                    <div class="agent-label">DA VINCI</div>
+                    <div class="agent-model">DALL-E 3</div>
+                </div>
+                <div id="agent-scout" class="agent-card green">
+                    <div class="avatar-frame">🔍</div>
+                    <div class="agent-label">SCOUT</div>
+                    <div class="agent-model">Gemini Pro</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR RIGHT: CONSOLE -->
+    <div id="sidebar-right">
+        <div class="console-header">
+            <div class="console-title">REAL-TIME CONSOLE</div>
+            <div id="live-clock" style="font-size: 11px; color: #333;"></div>
+        </div>
+        <div id="log-stream">
+            <!-- Logs will auto-populate -->
+        </div>
+    </div>
+
+    <script>
+        async function refreshPrices() {
+            try {
+                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,ripple,stellar,hedera-hashgraph&vs_currencies=usd&include_24hr_change=true');
+                const d = await res.json();
+                const update = (id, coin) => {
+                    const el = document.getElementById(id);
+                    const change = coin.usd_24h_change;
+                    el.innerHTML = `$${coin.usd.toLocaleString()} <span class="${change >= 0 ? 'up':'down'}">${change >= 0 ? '▲':'▼'} ${Math.abs(change).toFixed(2)}%</span>`;
+                };
+                update('p-btc', d.bitcoin);
+                update('p-eth', d.ethereum);
+                update('p-xrp', d.ripple);
+                update('p-xlm', d.stellar);
+                update('p-hbar', d['hedera-hashgraph']);
+            } catch (e) {}
+        }
+
+        async function syncData() {
+            try {
+                const res = await fetch('war_room_status.json');
+                const data = await res.json();
+
+                // Update Project Progress
+                document.getElementById('prog-val-1').innerText = data.missions[0].progress + '%';
+                document.getElementById('prog-bar-1').style.width = data.missions[0].progress + '%';
+                document.getElementById('current-task').innerText = data.executive_session;
+
+                // Update Agent States
+                Object.keys(data.agents).forEach(key => {
+                    const el = document.getElementById('agent-' + key);
+                    if (el) {
+                        el.className = 'agent-card ' + data.agents[key].color;
+                    }
+                });
+
+                // Update Logs
+                const stream = document.getElementById('log-stream');
+                stream.innerHTML = '';
+                data.logs.forEach(log => {
+                    const div = document.createElement('div');
+                    div.className = 'log-line';
+                    const parts = log.msg.split(':');
+                    const tag = parts.length > 1 ? parts[0] : 'SYSTEM';
+                    const msg = parts.length > 1 ? parts.slice(1).join(':') : log.msg;
+                    div.innerHTML = `<span class="log-time">[${log.time}]</span> <span class="log-tag">${tag}:</span> <span class="log-msg">${msg}</span>`;
+                    stream.appendChild(div);
+                });
+                stream.scrollTop = stream.scrollHeight;
+
+            } catch (e) {}
+        }
+
+        setInterval(refreshPrices, 300000);
+        setInterval(syncData, 2000);
+        setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        refreshPrices();
+        syncData();
+    </script>
+</body>
+</html>
