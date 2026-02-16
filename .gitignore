@@ -64,3 +64,5 @@ briefs/
 env/
 venv/
 ENV/
+scripts/generate_avatar.py
+.env
