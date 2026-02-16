@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "skills": {
+    "polyclaw": {
+      "version": "1.0.2",
+      "installedAt": 1771226038152
+    },
+    "upbit-trading-skill": {
+      "version": "1.0.0",
+      "installedAt": 1771226040428
+    },
+    "kalshi-trading": {
+      "version": "1.0.0",
+      "installedAt": 1771226042709
+    },
+    "predictme": {
+      "version": "1.2.0",
+      "installedAt": 1771226045777
+    }
+  }
+}

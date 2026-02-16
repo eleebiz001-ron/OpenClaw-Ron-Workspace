@@ -4,11 +4,16 @@ require('/Users/ieunchul/clawd/mcp-twitter/node_modules/dotenv').config({
   path: '/Users/ieunchul/clawd/mcp-twitter/.env',
 });
 
+const X_API_KEY = process.env.X_CONSUMER_KEY;
+const X_API_SECRET = process.env.X_CONSUMER_SECRET;
+const X_ACCESS_TOKEN = process.env.X_ACCESS_TOKEN;
+const X_ACCESS_SECRET = process.env.X_ACCESS_SECRET;
+
 const twitter = new TwitterApi({
-  appKey: process.env.X_API_KEY,
-  appSecret: process.env.X_API_SECRET,
-  accessToken: process.env.X_ACCESS_TOKEN,
-  accessSecret: process.env.X_ACCESS_SECRET,
+  appKey: X_API_KEY,
+  appSecret: X_API_SECRET,
+  accessToken: X_ACCESS_TOKEN,
+  accessSecret: X_ACCESS_SECRET,
 });
 
 const content = process.argv[2];

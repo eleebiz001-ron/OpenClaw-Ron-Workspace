@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { TwitterApi } = require('/Users/ieunchul/clawd/mcp-twitter/node_modules/twitter-api-v2');
 require('/Users/ieunchul/clawd/mcp-twitter/node_modules/dotenv').config({
   path: '/Users/ieunchul/clawd/mcp-twitter/.env',
@@ -8,25 +9,32 @@ const X_API_SECRET = process.env.X_CONSUMER_SECRET;
 const X_ACCESS_TOKEN = process.env.X_ACCESS_TOKEN;
 const X_ACCESS_SECRET = process.env.X_ACCESS_SECRET;
 
-const client = new TwitterApi({
+const twitter = new TwitterApi({
   appKey: X_API_KEY,
   appSecret: X_API_SECRET,
   accessToken: X_ACCESS_TOKEN,
   accessSecret: X_ACCESS_SECRET,
 });
 
-async function deleteMistake() {
-  const tweetId = process.argv[2];
-  if (!tweetId) {
-    console.error('Usage: node delete_mistake.js <tweetId>');
-    process.exit(1);
-  }
+const content = process.argv[2];
+const quoteTweetId = process.argv[3];
+
+if (!content || !quoteTweetId) {
+  console.error('Usage: node quote_to_x.js "Your comment" <quote_tweet_id>');
+  process.exit(1);
+}
+
+async function run() {
   try {
-    await client.v2.deleteTweet(tweetId);
-    console.log(`Successfully deleted tweet: ${tweetId}`);
+    console.log('--- Quoting Tweet on X ---');
+    const tweet = await twitter.v2.tweet(content, {
+      quote_tweet_id: quoteTweetId
+    });
+    console.log(`SUCCESS: Quote Tweet live! ID: ${tweet.data.id}`);
   } catch (error) {
-    console.error('Error deleting tweet:', error);
+    console.error('FAILED:', error);
+    process.exit(1);
   }
 }
 
-deleteMistake();
+run();
