@@ -1,0 +1,37 @@
+[
+  {
+    "market_id": "566187",
+    "side": "YES",
+    "entry": 0.69,
+    "target": 0.95,
+    "stop": 0.45
+  },
+  {
+    "market_id": "566188",
+    "side": "NO",
+    "entry": 0.71,
+    "target": 0.95,
+    "stop": 0.50
+  },
+  {
+    "market_id": "567561",
+    "side": "YES",
+    "entry": 0.56,
+    "target": 0.90,
+    "stop": 0.35
+  },
+  {
+    "market_id": "791705",
+    "side": "NO",
+    "entry": 0.74,
+    "target": 0.95,
+    "stop": 0.50
+  },
+  {
+    "market_id": "564162",
+    "side": "YES",
+    "entry": 0.62,
+    "target": 0.92,
+    "stop": 0.40
+  }
+]

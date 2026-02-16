@@ -16,5 +16,7 @@ Every time this heartbeat fires (approx. every 2 hours), perform the following c
     - **디지털 자산 (XRP/XLM/HBAR):** X.com 수익화 프로젝트에 집중하여 잠정 보류 중. 필요시 수동 확인.
     - **소피아 사모님:** 데일리 영어/아트 콘텐츠 준비 상황 확인.
     - **🐦 Birdie 에이전트:** X.com 및 기타 SNS 수익 창출 조사 상황 확인 및 보고.
+4.  **📈 Hyperliquid Live Status Refresh:**
+    - Run `python3 scripts/hl_status_monitor.py` to refresh the live market report.
 
 *If no action is needed after checking, reply `HEARTBEAT_OK`.*

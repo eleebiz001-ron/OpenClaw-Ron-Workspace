@@ -1,0 +1,6 @@
+{
+  "api_base": "https://gamma-api.polymarket.com",
+  "default_limit": 50,
+  "default_active": true,
+  "timeout_sec": 15
+}
