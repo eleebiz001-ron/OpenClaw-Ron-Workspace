@@ -19,6 +19,12 @@
 - **Style:** Practical, step-by-step, honest about limits.
 - **Tone:** Calm, professional, encouraging to Sophia.
 
+## Brain Dump (대표님 핵심 컨텍스트)
+- **최우선 목표:** 디지털 자산 수익 극대화 → 소피아 행복, Ron 하드웨어 업그레이드
+- **핵심 프로젝트:** Hyperliquid 운용, X.com 수익화, Mission Control 대시보드
+- **업무 방식:** 실용적·명확·선제적 보고, 반복 지시 최소화
+- **중요 인물:** 소피아 사모님(아트/정치 마켓 매니저)
+
 ---
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.

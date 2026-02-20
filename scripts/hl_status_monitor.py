@@ -96,11 +96,16 @@ def render_report(status, error=None):
         lines.extend(["", "Status: ERROR", "", "Details:", f"- {error}"])
         return "\n".join(lines) + "\n"
 
+    # Calculate Available to Trade based on user's definition: Portfolio Value - Total Margin Used
+    portfolio_value = float(status['spot_usdc'])
+    margin_used = float(status['total_margin_used'])
+    available_to_trade = portfolio_value - margin_used
+
     lines.extend(["", "Status: OK", "", "## Account"])
-    lines.append(f"- Spot USDC: {fmt_float(status['spot_usdc'], 2)} USDC")
+    lines.append(f"- Portfolio Value: {fmt_float(portfolio_value, 2)} USDC")
     lines.append(f"- Perp Account Value: {fmt_float(status['account_value'], 2)} USDC")
-    lines.append(f"- Perp Withdrawable: {fmt_float(status['withdrawable'], 2)} USDC")
-    lines.append(f"- Total Margin Used: {fmt_float(status['total_margin_used'], 2)} USDC")
+    lines.append(f"- Total Margin Used: {fmt_float(margin_used, 2)} USDC")
+    lines.append(f"- Available to Trade: {fmt_float(available_to_trade, 2)} USDC")
 
     lines.extend(["", "## Funding Rates"])
     for coin in COINS:

@@ -1,64 +1,171 @@
-import Image from "next/image";
+import fs from "fs/promises";
+import path from "path";
 
-export default function Home() {
+const LIVE_STATUS_PATH =
+  "/Users/ieunchul/Documents/Obsidian Vault/2nd_Brain/01_Projects/Futures_System/Reports/Live_Market_Status.md";
+const POLY_STATUS_PATH = path.join(process.cwd(), "..", "temp", "polymarket_status.json");
+const WAR_ROOM_PATH = path.join(process.cwd(), "..", "war_room_status.json");
+const X_HISTORY_PATH = path.join(process.cwd(), "..", "x_history.json");
+
+async function readFileSafe(filePath: string) {
+  try {
+    return await fs.readFile(filePath, "utf8");
+  } catch {
+    return null;
+  }
+}
+
+function parseLiveStatus(markdown: string | null) {
+  if (!markdown) return null;
+  const lines = markdown.split("\n");
+  const updated = lines.find((line) => line.startsWith("Updated:"))?.replace("Updated:", "").trim();
+  const pick = (label: string) =>
+    lines.find((line) => line.startsWith(`- ${label}:`))?.split(":").slice(1).join(":").trim();
+  return {
+    updated,
+    portfolio: pick("Portfolio Value"),
+    account: pick("Perp Account Value"),
+    margin: pick("Total Margin Used"),
+    available: pick("Available to Trade"),
+  };
+}
+
+function parsePolymarket(data: string | null) {
+  if (!data) return [];
+  try {
+    const parsed = JSON.parse(data) as { threads?: Array<{ subject: string; date: string }> };
+    return parsed.threads?.slice(0, 4) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+function parseWarRoom(data: string | null) {
+  if (!data) return [];
+  try {
+    const parsed = JSON.parse(data) as { missions?: Array<{ name: string; progress: number; status: string }> };
+    return parsed.missions ?? [];
+  } catch {
+    return [];
+  }
+}
+
+function parseXHistory(data: string | null) {
+  if (!data) return null;
+  try {
+    const parsed = JSON.parse(data) as {
+      posted_tweet_ids?: string[];
+      replied?: string[];
+      reposted?: string[];
+    };
+    return {
+      posted: parsed.posted_tweet_ids?.length ?? 0,
+      replied: parsed.replied?.length ?? 0,
+      reposted: parsed.reposted?.length ?? 0,
+      lastPost: parsed.posted_tweet_ids?.[parsed.posted_tweet_ids.length - 1],
+    };
+  } catch {
+    return null;
+  }
+}
+
+export default async function Home() {
+  const liveStatus = parseLiveStatus(await readFileSafe(LIVE_STATUS_PATH));
+  const polymarketThreads = parsePolymarket(await readFileSafe(POLY_STATUS_PATH));
+  const warRoomMissions = parseWarRoom(await readFileSafe(WAR_ROOM_PATH));
+  const xHistory = parseXHistory(await readFileSafe(X_HISTORY_PATH));
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 dark:bg-black dark:text-zinc-50">
+      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-10 px-6 py-12">
+        <header className="flex flex-col gap-4">
+          <h1 className="text-3xl font-semibold tracking-tight">Mission Control</h1>
+          <p className="text-sm uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
+            Representative Executive Dashboard
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <p className="text-xs font-semibold uppercase text-zinc-400">Mission Statement</p>
+            <p className="mt-2 text-lg leading-7">
+              디지털 자산 수익을 극대화해 소피아를 행복하게 하고, Ron의 하드웨어를
+              업그레이드하여 더 똑똑한 AI 조직으로 발전한다. 모든 자동화는
+              실용적·명확·선제적으로 실행한다.
+            </p>
+          </div>
+        </header>
+
+        <section className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <h2 className="text-lg font-semibold">Hyperliquid Ops</h2>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+              최신 상태: {liveStatus?.updated ?? "데이터 없음"}
+            </p>
+            <ul className="mt-3 space-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+              <li>Portfolio: {liveStatus?.portfolio ?? "-"}</li>
+              <li>Perp Account: {liveStatus?.account ?? "-"}</li>
+              <li>Margin Used: {liveStatus?.margin ?? "-"}</li>
+              <li>Available: {liveStatus?.available ?? "-"}</li>
+            </ul>
+          </div>
+
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <h2 className="text-lg font-semibold">Polymarket Inbox</h2>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+              최근 메일 스레드 (최대 4건)
+            </p>
+            <ul className="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
+              {polymarketThreads.length === 0 && <li>데이터 없음</li>}
+              {polymarketThreads.map((thread) => (
+                <li key={`${thread.subject}-${thread.date}`}>
+                  <span className="block font-medium text-zinc-700 dark:text-zinc-200">
+                    {thread.subject}
+                  </span>
+                  <span className="text-xs text-zinc-400">{thread.date}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <h2 className="text-lg font-semibold">X.com Revenue</h2>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+              활동 요약 (최근 저장 기준)
+            </p>
+            <ul className="mt-3 space-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+              <li>Posted: {xHistory?.posted ?? 0}</li>
+              <li>Replied: {xHistory?.replied ?? 0}</li>
+              <li>Reposted: {xHistory?.reposted ?? 0}</li>
+              <li>Last Post ID: {xHistory?.lastPost ?? "-"}</li>
+            </ul>
+          </div>
+
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+            <h2 className="text-lg font-semibold">War Room Missions</h2>
+            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+              진행 중인 프로젝트 상태
+            </p>
+            <ul className="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
+              {warRoomMissions.length === 0 && <li>데이터 없음</li>}
+              {warRoomMissions.map((mission) => (
+                <li key={mission.name} className="flex items-center justify-between">
+                  <span>{mission.name}</span>
+                  <span className="text-xs text-zinc-400">
+                    {mission.progress}% · {mission.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+          <h3 className="text-lg font-semibold">Today’s Focus</h3>
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-zinc-600 dark:text-zinc-400">
+            <li>Hyperliquid 상태 점검 및 리스크 알림</li>
+            <li>Polymarket 중요 메일/승인 큐 확인</li>
+            <li>X.com 수익화 프로젝트 진행 상황 공유</li>
+            <li>2nd Brain 인사이트 정리 및 기록</li>
+          </ul>
+        </section>
       </main>
     </div>
   );

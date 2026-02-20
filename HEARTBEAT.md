@@ -9,11 +9,14 @@ Every time this heartbeat fires (approx. every hour), perform the following chec
 
 2.  **📈 Hyperliquid & Strategy Monitoring:**
     - Run `python3 scripts/hl_status_monitor.py` to refresh the live market report.
+    - Run `python3 scripts/polymarket_status.py` to refresh Polymarket inbox cache.
+    - Run `python3 scripts/unified_trading_report.py` (if exists) to sync PnL data.
     - Check PnL and Funding Rates. If target profit is reached, initiate self-directed exit.
 
 3.  **🧠 2nd Brain & Mission Control:**
     - Check `2nd_Brain/00_Inbox/` for new unfiled notes.
     - Monitor `mission-control` build status and local server health.
+    - Update `war_room_status.json` with latest agent activities and system logs.
 
 4.  **🤵‍♂️ Ron's Duties:**
     - **gogcli:** Check for urgent emails or upcoming calendar events.

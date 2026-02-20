@@ -25,9 +25,45 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-50`}
       >
-        {children}
+        <div className="flex min-h-screen">
+          {/* Sidebar */}
+          <aside className="fixed inset-y-0 left-0 w-64 border-r border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950 hidden md:flex flex-col gap-8">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-xl font-bold tracking-tight">Ron Ops</h2>
+              <p className="text-[10px] uppercase tracking-widest text-zinc-400">Mission Control v4</p>
+            </div>
+            
+            <nav className="flex flex-col gap-2">
+              <a href="/" className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+                🏠 Overview
+              </a>
+              <a href="/war-room" className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+                ⚡ War Room
+              </a>
+              <div className="mt-4 border-t border-zinc-100 dark:border-zinc-900 pt-4 px-3 text-[10px] font-bold uppercase text-zinc-400">
+                Future Modules
+              </div>
+              <a href="#" className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 cursor-not-allowed">
+                📈 Hyperliquid Pro
+              </a>
+              <a href="#" className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 cursor-not-allowed">
+                🐦 X Automations
+              </a>
+            </nav>
+
+            <div className="mt-auto p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
+              <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">System Status</p>
+              <p className="text-xs mt-1">Ron Agent Active 🤵‍♂️</p>
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <div className="flex-1 md:pl-64">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );

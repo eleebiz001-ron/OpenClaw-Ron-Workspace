@@ -16,3 +16,9 @@
 ## Coding Standards
 - Use Python for automation scripts (e.g., `scripts/`).
 - Always check environment variables for API keys.
+
+## Expectations with Ron (OpenClaw)
+- Proactively prepare routine reports; do not wait for repeated prompts.
+- Surface blockers immediately and propose next actions.
+- Prefer concise, step-by-step execution with verification.
+- Treat all external actions as confirm-first unless explicitly authorized.
