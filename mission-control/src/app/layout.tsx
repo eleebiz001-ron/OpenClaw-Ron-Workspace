@@ -42,6 +42,9 @@ export default function RootLayout({
               <a href="/war-room" className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
                 ⚡ War Room
               </a>
+              <a href="/positions" className="rounded-lg px-3 py-2 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors">
+                📌 Positions
+              </a>
               <div className="mt-4 border-t border-zinc-100 dark:border-zinc-900 pt-4 px-3 text-[10px] font-bold uppercase text-zinc-400">
                 Future Modules
               </div>

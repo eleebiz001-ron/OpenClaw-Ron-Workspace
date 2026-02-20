@@ -3,7 +3,7 @@ import path from "path";
 
 const LIVE_STATUS_PATH =
   "/Users/ieunchul/Documents/Obsidian Vault/2nd_Brain/01_Projects/Futures_System/Reports/Live_Market_Status.md";
-const POLY_STATUS_PATH = path.join(process.cwd(), "..", "temp", "polymarket_status.json");
+const POLY_INVEST_PATH = path.join(process.cwd(), "..", "temp", "polymarket_invest_status.json");
 const WAR_ROOM_PATH = path.join(process.cwd(), "..", "war_room_status.json");
 const X_HISTORY_PATH = path.join(process.cwd(), "..", "x_history.json");
 
@@ -30,13 +30,18 @@ function parseLiveStatus(markdown: string | null) {
   };
 }
 
-function parsePolymarket(data: string | null) {
-  if (!data) return [];
+function parsePolyInvest(data: string | null) {
+  if (!data) return null;
   try {
-    const parsed = JSON.parse(data) as { threads?: Array<{ subject: string; date: string }> };
-    return parsed.threads?.slice(0, 4) ?? [];
+    return JSON.parse(data) as {
+      updated: string;
+      usdc_balance: string;
+      active_positions_count: number;
+      status: string;
+      active_positions?: any[];
+    };
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -71,7 +76,7 @@ function parseXHistory(data: string | null) {
 
 export default async function Home() {
   const liveStatus = parseLiveStatus(await readFileSafe(LIVE_STATUS_PATH));
-  const polymarketThreads = parsePolymarket(await readFileSafe(POLY_STATUS_PATH));
+  const polyInvest = parsePolyInvest(await readFileSafe(POLY_INVEST_PATH));
   const warRoomMissions = parseWarRoom(await readFileSafe(WAR_ROOM_PATH));
   const xHistory = parseXHistory(await readFileSafe(X_HISTORY_PATH));
 
@@ -108,20 +113,14 @@ export default async function Home() {
           </div>
 
           <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-            <h2 className="text-lg font-semibold">Polymarket Inbox</h2>
+            <h2 className="text-lg font-semibold">Polymarket Ops</h2>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              최근 메일 스레드 (최대 4건)
+              최신 상태: {polyInvest?.updated ?? "데이터 없음"}
             </p>
-            <ul className="mt-3 space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-              {polymarketThreads.length === 0 && <li>데이터 없음</li>}
-              {polymarketThreads.map((thread) => (
-                <li key={`${thread.subject}-${thread.date}`}>
-                  <span className="block font-medium text-zinc-700 dark:text-zinc-200">
-                    {thread.subject}
-                  </span>
-                  <span className="text-xs text-zinc-400">{thread.date}</span>
-                </li>
-              ))}
+            <ul className="mt-3 space-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+              <li>USDC Balance: {polyInvest?.usdc_balance ?? "-"}</li>
+              <li>Active Positions: {polyInvest?.active_positions_count ?? 0}</li>
+              <li>Status: {polyInvest?.status ?? "Checking..."}</li>
             </ul>
           </div>
 

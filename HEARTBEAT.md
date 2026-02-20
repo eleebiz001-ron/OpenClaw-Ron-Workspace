@@ -9,6 +9,8 @@ Every time this heartbeat fires (approx. every hour), perform the following chec
 
 2.  **📈 Hyperliquid & Strategy Monitoring:**
     - Run `python3 scripts/hl_status_monitor.py` to refresh the live market report.
+    - Run `python3 scripts/hl_positions_sync.py` to refresh Hyperliquid positions.
+    - Run `python3 scripts/poly_invest_status_sync.py` to refresh Polymarket positions.
     - Run `python3 scripts/polymarket_status.py` to refresh Polymarket inbox cache.
     - Run `python3 scripts/unified_trading_report.py` (if exists) to sync PnL data.
     - Check PnL and Funding Rates. If target profit is reached, initiate self-directed exit.
