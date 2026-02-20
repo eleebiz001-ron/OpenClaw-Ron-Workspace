@@ -22,8 +22,13 @@ export default async function StrategyPage() {
       </header>
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold">Current Strategy & Benchmarks</h2>
+          <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold dark:bg-emerald-900/30">
+            Active: V1.1
+          </span>
+        </div>
         <div className="prose prose-zinc dark:prose-invert max-w-none">
-          {/* Simple markdown-to-text display for now */}
           <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
             {algoContent}
           </pre>
